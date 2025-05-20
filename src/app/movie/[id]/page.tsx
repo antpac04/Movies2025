@@ -17,14 +17,38 @@ interface MovieDetail {
 export default function MoviePage() {
   const { id } = useParams();
   const [movie, setMovie] = useState<MovieDetail | null>(null);
+  const [isFavorite, setIsFavorite] = useState(false);
 
   useEffect(() => {
-    fetch(
-      `https://api.themoviedb.org/3/movie/${id}?api_key=${process.env.NEXT_PUBLIC_TMDB_API_KEY}&language=en-US`
-    )
-      .then((res) => res.json())
-      .then((data) => setMovie(data));
+    if (!id) return;
+
+    const fetchMovie = async () => {
+      const res = await fetch(
+        `https://api.themoviedb.org/3/movie/${id}?api_key=${process.env.NEXT_PUBLIC_TMDB_API_KEY}&language=es-MX`
+      );
+      const data = await res.json();
+      setMovie(data);
+    };
+
+    fetchMovie();
+
+    const favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
+    setIsFavorite(favorites.includes(Number(id)));
   }, [id]);
+
+  const toggleFavorite = () => {
+    const favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
+    let updatedFavorites;
+
+    if (isFavorite) {
+      updatedFavorites = favorites.filter((favId: number) => favId !== Number(id));
+    } else {
+      updatedFavorites = [...favorites, Number(id)];
+    }
+
+    localStorage.setItem('favorites', JSON.stringify(updatedFavorites));
+    setIsFavorite(!isFavorite);
+  };
 
   if (!movie) return <div>Loading...</div>;
 
@@ -42,7 +66,9 @@ export default function MoviePage() {
         <p><strong>Release:</strong> {movie.release_date}</p>
         <p><strong>Genres:</strong> {movie.genres.map(g => g.name).join(', ')}</p>
         <p><strong>Rating:</strong> {movie.vote_average}</p>
-        <button className={styles.favorite}>Add to Favorites</button>
+        <button className={styles.favorite} onClick={toggleFavorite}>
+          {isFavorite ? 'Remove from Favorites' : 'Add to Favorites'}
+        </button>
       </div>
     </div>
   );

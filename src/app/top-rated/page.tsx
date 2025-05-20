@@ -12,3 +12,5 @@ export default async function TopRatedPage({ searchParams }: { searchParams?: { 
     </div>
   );
 }
+
+
