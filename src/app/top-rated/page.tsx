@@ -1,16 +1,34 @@
-import { fetchMovies } from "@/lib/api";
-import { MovieList } from "@/components/MovieList";
+import { MovieList } from "../../components/MovieList";
+import { headers } from "next/headers";
 
-export default async function TopRatedPage({ searchParams }: { searchParams?: { page?: string } }) {
-  const page = parseInt(searchParams?.page || "1", 10);
-  const data = await fetchMovies("/movie/top_rated", page);
+const API_KEY = process.env.NEXT_PUBLIC_TMDB_API_KEY;
+
+async function fetchMovies(page: number = 1) {
+  const res = await fetch(
+    `https://api.themoviedb.org/3/movie/top_rated?api_key=${API_KEY}&language=es-MX&page=${page}`
+  );
+
+  if (!res.ok) {
+    throw new Error("Failed to fetch top-rated movies");
+  }
+
+  const data = await res.json();
+  return data.results;
+}
+
+export default async function TopRatedPage() {
+  const headersList = await headers();
+  const url = headersList.get("x-url") || "http://localhost/top-rated";
+  const searchParams = new URL(url).searchParams;
+  const pageParam = searchParams.get("page");
+  const currentPage = Number(pageParam || 1);
+
+  const movies = await fetchMovies(currentPage);
 
   return (
     <div>
-      <h1 className="text-xl font-bold mb-2">Películas Mejor Valoradas</h1>
-      <MovieList movies={data.results} page={page} route="top-rated" />
+      <h1 style={{ padding: "20px" }}>Películas Mejor Calificadas</h1>
+      <MovieList movies={movies} page={currentPage} route="top-rated" />
     </div>
   );
 }
-
-
