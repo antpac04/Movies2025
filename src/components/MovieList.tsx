@@ -3,12 +3,21 @@
 import MovieCard from "./MovieCard";
 import Link from "next/link";
 
+type Movie = {
+  id: number;
+  title: string;
+  poster_path: string;
+  release_date: string;
+  vote_average: number;
+  overview: string;
+};
+
 export const MovieList = ({
   movies,
   page = 1,
   route = "",
 }: {
-  movies: any[];
+  movies: Movie[];
   page?: number;
   route?: string;
 }) => (

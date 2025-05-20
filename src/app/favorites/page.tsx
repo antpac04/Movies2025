@@ -4,8 +4,17 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import MovieCard from '../../components/MovieCard';
 
+type Movie = {
+  id: number;
+  title: string;
+  poster_path: string;
+  release_date: string;
+  vote_average: number;
+  overview: string;
+};
+
 export default function FavoritesPage() {
-  const [favorites, setFavorites] = useState<any[]>([]);
+  const [favorites, setFavorites] = useState<Movie[]>([]);
 
   useEffect(() => {
     const loadFavorites = async () => {
@@ -20,7 +29,7 @@ export default function FavoritesPage() {
               language: 'es-MX',
             },
           })
-          .then((res) => res.data)
+          .then((res) => res.data as Movie)
       );
 
       const movies = await Promise.all(requests);
@@ -42,11 +51,20 @@ export default function FavoritesPage() {
   return (
     <div style={{ padding: '20px' }}>
       <h1>Mis Películas Favoritas</h1>
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '20px' }}>
+      <div
+        style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))',
+          gap: '20px',
+        }}
+      >
         {favorites.map((movie) => (
           <div key={movie.id}>
             <MovieCard movie={movie} />
-            <button onClick={() => removeFavorite(movie.id)} style={{ marginTop: '10px' }}>
+            <button
+              onClick={() => removeFavorite(movie.id)}
+              style={{ marginTop: '10px' }}
+            >
               Eliminar
             </button>
           </div>
