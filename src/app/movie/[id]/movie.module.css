@@ -1,0 +1,36 @@
+.detailContainer {
+  display: flex;
+  gap: 2rem;
+  padding: 2rem;
+  background: #fff;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.poster {
+  width: 300px;
+  height: auto;
+  border-radius: 1rem;
+}
+
+.details {
+  flex: 1;
+}
+
+.tagline {
+  font-style: italic;
+  color: #666;
+}
+
+.favorite {
+  margin-top: 1rem;
+  background: #d38d00;
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  font-weight: bold;
+}
+.favorite:hover {
+  background: #b07500;
+}
